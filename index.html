@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Öğrenci Girişi - QuizApp</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <!-- Landing View -->
+        <div id="view-landing" class="view active">
+            <h1 class="logo bounce">QuizApp!</h1>
+            <div class="card" style="margin-bottom: 2rem;">
+                <h3 style="text-align:center;">Öğrenci Girişi</h3>
+                <input type="text" id="nickname-input" placeholder="Takma Ad (Nickname)" autocomplete="off">
+                <button id="btn-join-lobby" class="btn btn-primary btn-block" style="margin-top: 10px;">Oyuna
+                    Katıl</button>
+            </div>
+            <p style="color:white; font-weight:bold;"><a href="admin.html"
+                    style="color:yellow; text-decoration:none;">Öğretmen / Yönetici Paneli</a></p>
+        </div>
+
+        <!-- Unified Lobby View -->
+        <div id="view-lobby" class="view">
+            <div class="card" style="max-width: 600px; width:100%; text-align:center;">
+                <h2>Bekleme Salonu</h2>
+                <p>Lütfen öğretmenin (Yönetici) oyunu başlatmasını bekleyin.</p>
+                <div class="player-count">Bağlı: <span id="lobby-player-count">0</span> Kişi</div>
+                <div id="lobby-players-list" class="players-grid"
+                    style="margin: 20px 0; max-height: 200px; overflow-y: auto;"></div>
+            </div>
+        </div>
+
+        <!-- Unified Question View -->
+        <div id="view-question" class="view">
+            <div class="top-bar">
+                <h2 id="question-text" class="question-title">Sorular yükleniyor...</h2>
+                <div class="timer-circle" style="display:none;"><span id="timer-text"></span></div>
+            </div>
+
+            <div class="answer-grid">
+                <button class="answer-btn red" data-index="0">
+                    <span class="answer-text" id="ans-text-0">...</span>
+                </button>
+                <button class="answer-btn blue" data-index="1">
+                    <span class="answer-text" id="ans-text-1">...</span>
+                </button>
+                <button class="answer-btn yellow" data-index="2">
+                    <span class="answer-text" id="ans-text-2">...</span>
+                </button>
+                <button class="answer-btn green" data-index="3">
+                    <span class="answer-text" id="ans-text-3">...</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Interactive Wait view -->
+        <div id="view-wait" class="view">
+            <h2 id="wait-message" class="status-message">Cevap Gönderildi!</h2>
+            <p id="wait-submessage">Öğretmenin sonucu göstermesi / sürenin bitmesi bekleniyor...</p>
+            <div class="loader"></div>
+            <div id="wait-answers-count" style="margin-top:1rem; font-size:1.5rem; font-weight:bold;">...</div>
+        </div>
+
+        <!-- Result / Leaderboard View -->
+        <div id="view-result" class="view" style="overflow-y:auto; justify-content: flex-start;">
+            <h1 id="result-title" style="margin-top:20px;">Soru Bitti!</h1>
+            <div class="result-feedback" id="result-feedback"></div>
+
+            <!-- EXPLANATION -->
+            <div id="result-explanation" class="card"
+                style="margin-top: 15px; font-size: 1.2rem; font-weight: bold; background-color: var(--blue); color: white; display: none; width: 100%; max-width: 800px; text-align:center;">
+            </div>
+
+            <!-- BAR CHART -->
+            <div id="result-chart" class="card"
+                style="margin-top: 20px; width: 100%; max-width: 600px; display: flex; flex-direction: row; justify-content: space-around; align-items: flex-end; height: 250px; padding: 20px 10px; background-color: white;">
+            </div>
+
+            <!-- LEADERBOARD (Only shown at Game Over) -->
+            <div id="leaderboard-section" class="card leaderboard"
+                style="max-width: 600px; width:100%; margin-top: 2rem; display: none;">
+                <h2 style="text-align:center;">Puan Tablosu (Final SKORLAR)</h2>
+                <div id="leaderboard-list" class="leaderboard-list"></div>
+            </div>
+
+            <p style="margin-top:20px; color:white; font-size:1.2rem; font-weight:bold;">Yöneticinin yeni soruya
+                geçmesini bekleyin...</p>
+        </div>
+    </div>
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>

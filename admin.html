@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yönetici Paneli (Host)</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body style="background-color: var(--purple);">
+    <div id="app"
+        style="overflow-y:auto; flex-direction:row; align-items:flex-start; flex-wrap: wrap; background-color: var(--purple);">
+        <div class="card" style="width: 350px; margin: 20px;">
+            <h2 style="color:var(--dark); margin-bottom: 20px;">🕹️ Kontroller</h2>
+            <button id="btn-start-lobby" class="btn btn-secondary btn-block"
+                style="background-color: var(--red); color: white; border: none;">Oyunu Sıfırla & Lobiye Aç</button>
+            <div id="question-controls" style="margin-top: 30px; border-top: 2px solid #eee; padding-top: 20px;"></div>
+        </div>
+        <div class="card" style="flex:1; min-width: 300px; margin: 20px; color: var(--dark);">
+            <h2>Durum: <span id="admin-status" style="color: var(--blue);">Bağlanıyor...</span></h2>
+            <hr style="margin: 10px 0;">
+            <h3>Giren Öğrenciler (<span id="admin-player-count">0</span>)</h3>
+            <div id="admin-players-list" class="players-grid" style="margin-top: 15px;"></div>
+        </div>
+    </div>
+    <script type="module" src="admin.js"></script>
+</body>
+
+</html>
