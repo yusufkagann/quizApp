@@ -73,7 +73,8 @@ const listenToGame = () => {
         else if (gameState.status === 'result') {
             const myP = gameState.players ? gameState.players[myPlayerId] : null;
 
-            if (myP && (myP.currentAnswer === null || myP.currentAnswer === undefined)) {
+            // Eğer oyuncunun hiç "lastPoints" kaydı yoksa, sunucu tarafından henüz hiç değerlendirilmemiştir (Sonuç ekranında katılmıştır).
+            if (myP && myP.lastPoints === undefined && (myP.currentAnswer === null || myP.currentAnswer === undefined)) {
                 switchView('view-lobby');
                 renderLobby();
             } else {
@@ -83,7 +84,7 @@ const listenToGame = () => {
         else if (gameState.status === 'game_over') {
             const myP = gameState.players ? gameState.players[myPlayerId] : null;
             // Eğer oyunu daha önce hiç oynamamış yepyeni birisiyse ve oyun çoktan bitmişse Lobi'de kalsın
-            if (!myP || myP.score === 0 || myP.score === undefined) {
+            if (!myP || myP.lastPoints === undefined) {
                 switchView('view-lobby');
                 renderLobby();
             } else {
