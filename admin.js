@@ -204,6 +204,22 @@ const renderPlayers = () => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+    const qrBtn = document.getElementById('btn-show-qr');
+    const qrOverlay = document.getElementById('qr-overlay');
+    const qrCloseBtn = document.getElementById('btn-close-qr');
+
+    if (qrBtn && qrOverlay && qrCloseBtn) {
+        qrBtn.addEventListener('click', () => {
+            qrOverlay.style.display = 'flex';
+        });
+        qrCloseBtn.addEventListener('click', () => {
+            qrOverlay.style.display = 'none';
+        });
+        qrOverlay.addEventListener('click', (e) => {
+            if (e.target === qrOverlay) qrOverlay.style.display = 'none';
+        });
+    }
+
     const loginOverlay = document.getElementById('admin-login-overlay');
     const appDiv = document.getElementById('app');
     const passInput = document.getElementById('admin-password-input');
