@@ -22,26 +22,30 @@ body {
     color: var(--dark);
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh;
-    overflow: hidden;
+    align-items: flex-start;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 #app {
     width: 100%;
-    height: 100%;
+    min-height: 100vh;
     position: relative;
     background: var(--bg-light);
+    display: flex;
+    flex-direction: column;
 }
 
 .view {
     display: none;
     width: 100%;
-    height: 100%;
+    flex: 1;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 15px;
+    box-sizing: border-box;
 }
 
 .view.active {
@@ -181,25 +185,30 @@ input:focus {
 
 .top-bar {
     width: 100%;
+    max-width: 1200px;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-bottom: 1rem;
-    padding: 10px;
+    padding: 15px 10px;
     background: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
 }
 
 .question-title {
-    font-size: clamp(1.2rem, 3.5vw, 2rem);
+    font-size: clamp(1rem, 4vw, 1.8rem);
     text-align: center;
-    margin: 10px 0;
+    margin: 0;
     color: var(--dark);
     font-weight: 900;
-    max-height: 25vh;
+    max-height: 40vh;
     overflow-y: auto;
     width: 100%;
-    padding: 0 1rem;
+    padding: 0 10px;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .timer-circle {
@@ -223,9 +232,10 @@ input:focus {
     grid-template-rows: 1fr 1fr;
     width: 100%;
     max-width: 1200px;
-    height: 60vh;
+    flex: 1;
+    min-height: 30vh;
     gap: 10px;
-    padding: 10px;
+    padding: 5px;
 }
 
 .answer-btn {

@@ -46,12 +46,17 @@
                 Göster</button>
             <div style="border-top: 2px solid #eee; padding-top: 20px;">
                 <button id="btn-start-game" class="btn btn-primary btn-block"
-                    style="font-size: 1.2rem; padding: 15px;">🚀 Sınavı Başlat (Otomatik Akış)</button>
-                <p style="margin-top:15px; font-size:0.9rem; color:#666;">Sınav başlatıldığında sorular adım adım
-                    otomatik olarak ilerleyecektir. Her bir sorunun normal süresi 15 saniyedir ancak herkes cevap
-                    verdiğinde süre beklenmeden direkt sonuç ekranına geçilir.</p>
+                    style="font-size: 1.2rem; padding: 15px;">🚀 Sınavı Başlat</button>
+                <p style="margin-top:15px; font-size:0.9rem; color:#666;">Soruların normal süresi 20 saniyedir ancak
+                    herkes cevap verdiğinde süre beklenmeden sonuç ekranına geçilir. Sonuç ekranından <b>diğer soruya
+                        geçiş işlemini Manuel olarak</b> siz yapacaksınız.</p>
             </div>
-            <div id="question-controls" style="display:none;"></div>
+            <div id="question-controls"
+                style="display:none; border-top: 2px solid #eee; padding-top: 20px; margin-top: 20px;">
+                <button id="btn-next-question" class="btn btn-secondary btn-block"
+                    style="background-color: var(--blue); color: white; border: none; font-size: 1.2rem; padding: 15px;">➡️
+                    Sonraki Göreve Geç</button>
+            </div>
         </div>
         <div style="flex:1; min-width: 300px; display:flex; flex-direction:column;">
             <div class="card" style="margin: 20px; color: var(--dark);">

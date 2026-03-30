@@ -17,6 +17,15 @@ gameRef.on('value', (snapshot) => {
     }
     document.getElementById('admin-status').innerText = statusText;
 
+    const qc = document.getElementById('question-controls');
+    if (qc) {
+        if (gameState.status === 'result') {
+            qc.style.display = 'block';
+        } else {
+            qc.style.display = 'none';
+        }
+    }
+
     const qBox = document.getElementById('admin-question-box');
     if (qBox) {
         if (gameState.status === 'question' || gameState.status === 'result') {
@@ -104,11 +113,11 @@ const transitionToQuestion = (index) => {
     }
     gameRef.update(updates);
 
-    // 15 Saniye (15000 ms) sonra sonucu otomatik göster
+    //  (20000 ms) sonra sonucu otomatik göster
     clearTimeout(gameLoopTimer);
     gameLoopTimer = setTimeout(() => {
         transitionToResult(index);
-    }, 15500);
+    }, 20500);
 };
 
 const transitionToResult = (index) => {
@@ -125,17 +134,17 @@ const transitionToResult = (index) => {
 
             if (p.currentAnswer === correctIdx) {
                 // 1. Gecikme süresini hesapla
-                let delay = 15000;
+                let delay = 20000;
                 if (p.timestamp && gameState.questionStartTime) {
                     delay = p.timestamp - gameState.questionStartTime;
                 }
 
                 // 2. İnternet / Cihaz gecikmesi için 0.5 saniye (500ms) tolerans
                 let effectiveDelay = Math.max(0, delay - 500);
-                if (effectiveDelay > 14500) effectiveDelay = 14500;
+                if (effectiveDelay > 19500) effectiveDelay = 19500;
 
                 // 3. Oransal Puan Dağıtımı (İlk %50 Garanti, İkinci %50 Hız)
-                const ratio = 1 - (effectiveDelay / 14500);
+                const ratio = 1 - (effectiveDelay / 19500);
                 let points = 500 + Math.round(ratio * 500);
 
                 // 4. Streak (Seri) Bonus Hesaplama
@@ -162,19 +171,8 @@ const transitionToResult = (index) => {
     }
     gameRef.update(updates);
 
-    if (index < questions.length - 1) {
-        // 8 saniye sonra otomatik diğer soruya geç
-        clearTimeout(gameLoopTimer);
-        gameLoopTimer = setTimeout(() => {
-            transitionToQuestion(index + 1);
-        }, 8000);
-    } else {
-        // Son Soru. Puanları göster, 10 saniye bekle ve sonra ŞAMPİYONLUK TABLOSUNA (game_over) atla!
-        clearTimeout(gameLoopTimer);
-        gameLoopTimer = setTimeout(() => {
-            gameRef.update({ status: 'game_over' });
-        }, 10000);
-    }
+    // Otomatik geçiş iptal edildi, admin manuel olarak "Sonraki Göreve Geç" butonuna basacak.
+    clearTimeout(gameLoopTimer);
 };
 
 const renderPlayers = () => {
@@ -217,6 +215,21 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         qrOverlay.addEventListener('click', (e) => {
             if (e.target === qrOverlay) qrOverlay.style.display = 'none';
+        });
+    }
+
+    const nextBtn = document.getElementById('btn-next-question');
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            if (!gameState) return;
+            if (gameState.status === 'result') {
+                const nextIndex = gameState.currentQuestionIndex + 1;
+                if (nextIndex < questions.length) {
+                    transitionToQuestion(nextIndex);
+                } else {
+                    gameRef.update({ status: 'game_over' });
+                }
+            }
         });
     }
 
