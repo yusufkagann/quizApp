@@ -10,8 +10,10 @@ gameRef.on('value', (snapshot) => {
     if (gameState.status === 'lobby') statusText = "Lobi Açık (Öğrenciler giriyor)";
     else if (gameState.status === 'question') statusText = `Soru ${gameState.currentQuestionIndex + 1} Sürülüyor`;
     else if (gameState.status === 'result') {
-        if (gameState.currentQuestionIndex >= questions.length - 1) statusText = "Oyun Bitti (Sıralama Gösteriliyor)";
-        else statusText = `Soru ${gameState.currentQuestionIndex + 1} Sonucu Gösteriliyor`;
+        statusText = `Soru ${gameState.currentQuestionIndex + 1} Sonucu Gösteriliyor`;
+    }
+    else if (gameState.status === 'game_over') {
+        statusText = "Oyun Bitti (ŞAMPİYONLUK TABLOSU GÖSTERİLİYOR)";
     }
     document.getElementById('admin-status').innerText = statusText;
 
@@ -129,6 +131,12 @@ const transitionToResult = (index) => {
         gameLoopTimer = setTimeout(() => {
             transitionToQuestion(index + 1);
         }, 8000);
+    } else {
+        // Son Soru. Puanları göster, 10 saniye bekle ve sonra ŞAMPİYONLUK TABLOSUNA (game_over) atla!
+        clearTimeout(gameLoopTimer);
+        gameLoopTimer = setTimeout(() => {
+            gameRef.update({ status: 'game_over' });
+        }, 10000);
     }
 };
 

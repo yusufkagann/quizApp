@@ -20,10 +20,18 @@ document.getElementById('btn-join-lobby').addEventListener('click', () => {
         }
 
         const playerRef = db.ref(`active_game/players/${myPlayerId}`);
-        playerRef.set({ name: myNickname, score: 0, currentAnswer: null });
-        playerRef.onDisconnect().remove();
+        // Oyuna ilk girişte eğer oyuncu yoksa sıfırdan ekle, varsa sadece ismini güncelle
+        playerRef.once('value').then(snap => {
+            if (!snap.exists()) {
+                playerRef.set({ name: myNickname, score: 0, currentAnswer: null });
+            } else {
+                playerRef.update({ name: myNickname });
+            }
+        });
 
-        listenToGame();
+        // Çıkış yapıldığında veritabanından kalıcı silinmemesi için onDisconnect() iptal edildi!
+
+        switchView('view-wait');
     } else {
         alert("Lütfen bir takma ad girin!");
     }
@@ -54,14 +62,15 @@ const listenToGame = () => {
         else if (gameState.status === 'result') {
             const myP = gameState.players ? gameState.players[myPlayerId] : null;
 
-            // Eğer kullanıcı bu soruya cevap vermediyse (yani oyuna daha yeni katıldıysa)
-            // onu puan tablosu / şampiyonluk ekranına atmak yerine eskisi gibi Lobi'ye (Bekleme Alanına) alalım.
             if (myP && (myP.currentAnswer === null || myP.currentAnswer === undefined)) {
                 switchView('view-lobby');
                 renderLobby();
             } else {
                 showResult();
             }
+        }
+        else if (gameState.status === 'game_over') {
+            showGameOver();
         }
     });
 };
@@ -192,34 +201,45 @@ const showResult = () => {
 
     const nextQIndicator = document.getElementById('next-question-indicator');
 
-    if (gameState.currentQuestionIndex >= questions.length - 1) {
-        // EN SON SORU BİTTİ -> SADECE LİDERLİK TABLOSUNU GÖSTER
-        document.getElementById('result-chart').style.display = 'none';
-        feedbackEl.style.display = 'none';
-        explEl.style.display = 'none';
-        if (nextQIndicator) nextQIndicator.style.display = 'none';
-
-        document.getElementById('leaderboard-section').style.display = 'block';
-        document.getElementById('result-title').innerText = "🏆 ŞAMPİYONLUK TABLOSU 🏆";
-        renderLeaderboard();
+    // ARTIK her 'result' durumu standart puan/şema gösterimidir. 
+    if (myAnswer === null || myAnswer === undefined) {
+        feedbackEl.innerHTML = `Süre Doldu!<br><span style="font-size:1.2rem; font-weight:normal;">+0 Puan</span>`;
+        feedbackEl.className = 'result-feedback incorrect';
+    } else if (myAnswer === correctIndex) {
+        feedbackEl.innerHTML = `Doğru!<br><span style="font-size:1.2rem; font-weight:normal;">+${lastPoints} Puan</span>${streakText}`;
+        feedbackEl.className = 'result-feedback correct';
     } else {
-        // ARA SONUÇ EKRANI
-        if (myAnswer === null || myAnswer === undefined) {
-            feedbackEl.innerHTML = `Süre Doldu!<br><span style="font-size:1.2rem; font-weight:normal;">+0 Puan</span>`;
-            feedbackEl.className = 'result-feedback incorrect';
-        } else if (myAnswer === correctIndex) {
-            feedbackEl.innerHTML = `Doğru!<br><span style="font-size:1.2rem; font-weight:normal;">+${lastPoints} Puan</span>${streakText}`;
-            feedbackEl.className = 'result-feedback correct';
-        } else {
-            feedbackEl.innerHTML = `Yanlış!<br><span style="font-size:1.2rem; font-weight:normal;">+0 Puan</span>`;
-            feedbackEl.className = 'result-feedback incorrect';
-        }
-
-        renderChart(correctIndex);
-        document.getElementById('leaderboard-section').style.display = 'none';
-        document.getElementById('result-title').innerText = `Soru ${gameState.currentQuestionIndex + 1} Sonucu!`;
-        if (nextQIndicator) nextQIndicator.style.display = 'block';
+        feedbackEl.innerHTML = `Yanlış!<br><span style="font-size:1.2rem; font-weight:normal;">+0 Puan</span>`;
+        feedbackEl.className = 'result-feedback incorrect';
     }
+
+    renderChart(correctIndex);
+    document.getElementById('leaderboard-section').style.display = 'none';
+    document.getElementById('result-title').innerText = `Soru ${gameState.currentQuestionIndex + 1} Sonucu!`;
+
+    if (nextQIndicator) {
+        if (gameState.currentQuestionIndex >= questions.length - 1) {
+            nextQIndicator.style.display = 'none';
+        } else {
+            nextQIndicator.style.display = 'block';
+        }
+    }
+};
+
+const showGameOver = () => {
+    switchView('view-result');
+    const nextQIndicator = document.getElementById('next-question-indicator');
+    const feedbackEl = document.getElementById('result-feedback');
+    const explEl = document.getElementById('result-explanation');
+
+    if (nextQIndicator) nextQIndicator.style.display = 'none';
+    document.getElementById('result-chart').style.display = 'none';
+    feedbackEl.style.display = 'none';
+    if (explEl) explEl.style.display = 'none';
+
+    document.getElementById('leaderboard-section').style.display = 'block';
+    document.getElementById('result-title').innerText = "🏆 ŞAMPİYONLUK TABLOSU 🏆";
+    renderLeaderboard();
 };
 
 const createPodiumStep = (player, rank, stepClass) => {
