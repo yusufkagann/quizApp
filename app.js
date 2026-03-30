@@ -29,9 +29,8 @@ document.getElementById('btn-join-lobby').addEventListener('click', () => {
             }
         });
 
-        // Çıkış yapıldığında veritabanından kalıcı silinmemesi için onDisconnect() iptal edildi!
-
-        switchView('view-wait');
+        // Gerçek zamanlı oyun akışını dinlemeye başla!
+        listenToGame();
     } else {
         alert("Lütfen bir takma ad girin!");
     }
@@ -70,7 +69,14 @@ const listenToGame = () => {
             }
         }
         else if (gameState.status === 'game_over') {
-            showGameOver();
+            const myP = gameState.players ? gameState.players[myPlayerId] : null;
+            // Eğer oyunu daha önce hiç oynamamış yepyeni birisiyse ve oyun çoktan bitmişse Lobi'de kalsın
+            if (!myP || myP.score === 0 || myP.score === undefined) {
+                switchView('view-lobby');
+                renderLobby();
+            } else {
+                showGameOver();
+            }
         }
     });
 };
