@@ -165,3 +165,34 @@ const renderPlayers = () => {
         list.appendChild(div);
     });
 };
+
+document.addEventListener("DOMContentLoaded", () => {
+    const loginOverlay = document.getElementById('admin-login-overlay');
+    const appDiv = document.getElementById('app');
+    const passInput = document.getElementById('admin-password-input');
+    const loginBtn = document.getElementById('btn-admin-login');
+
+    if (loginOverlay && appDiv && passInput && loginBtn) {
+        if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+            loginOverlay.style.display = 'none';
+            appDiv.style.display = 'flex';
+        }
+
+        loginBtn.addEventListener('click', () => {
+            if (passInput.value === 'furkan123') {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                loginOverlay.style.display = 'none';
+                appDiv.style.display = 'flex';
+            } else {
+                alert('Yanlış şifre!');
+                passInput.value = '';
+            }
+        });
+
+        passInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                loginBtn.click();
+            }
+        });
+    }
+});
