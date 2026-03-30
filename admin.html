@@ -36,11 +36,19 @@
             </div>
             <div id="question-controls" style="display:none;"></div>
         </div>
-        <div class="card" style="flex:1; min-width: 300px; margin: 20px; color: var(--dark);">
-            <h2>Durum: <span id="admin-status" style="color: var(--blue);">Bağlanıyor...</span></h2>
-            <hr style="margin: 10px 0;">
-            <h3>Giren Öğrenciler (<span id="admin-player-count">0</span>)</h3>
-            <div id="admin-players-list" class="players-grid" style="margin-top: 15px;"></div>
+        <div style="flex:1; min-width: 300px; display:flex; flex-direction:column;">
+            <div class="card" style="margin: 20px; color: var(--dark);">
+                <h2>Durum: <span id="admin-status" style="color: var(--blue);">Bağlanıyor...</span></h2>
+                <div id="admin-question-box"
+                    style="display:none; margin-top:15px; padding:15px; background-color:#f8f9fa; border-left: 5px solid var(--blue); border-radius:5px;">
+                    <h3 id="admin-question-text" style="margin-bottom:10px;">Soru</h3>
+                    <ul id="admin-question-answers" style="list-style:none; padding:0; margin:0;"></ul>
+                </div>
+            </div>
+            <div class="card" style="margin: 20px; color: var(--dark); flex:1;">
+                <h3>Giren Öğrenciler (<span id="admin-player-count">0</span>)</h3>
+                <div id="admin-players-list" class="players-grid" style="margin-top: 15px;"></div>
+            </div>
         </div>
     </div>
     <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>

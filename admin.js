@@ -17,6 +17,43 @@ gameRef.on('value', (snapshot) => {
     }
     document.getElementById('admin-status').innerText = statusText;
 
+    const qBox = document.getElementById('admin-question-box');
+    if (qBox) {
+        if (gameState.status === 'question' || gameState.status === 'result') {
+            const q = questions[gameState.currentQuestionIndex];
+            if (q) {
+                document.getElementById('admin-question-text').innerText = `Soru ${gameState.currentQuestionIndex + 1}: ${q.question}`;
+                const ul = document.getElementById('admin-question-answers');
+                ul.innerHTML = '';
+                const colors = ['#e21b3c', '#1368ce', '#d89e00', '#26890c'];
+                q.answers.forEach((ans, idx) => {
+                    const li = document.createElement('li');
+                    li.style.padding = '8px 12px';
+                    li.style.marginBottom = '8px';
+                    li.style.color = 'white';
+                    li.style.fontWeight = 'bold';
+                    li.style.borderRadius = '4px';
+                    li.style.backgroundColor = colors[idx];
+
+                    if (gameState.status === 'result') {
+                        if (idx === q.correctIndex) {
+                            li.innerHTML = `✅ ${ans}`;
+                        } else {
+                            li.innerHTML = `❌ ${ans}`;
+                            li.style.opacity = '0.4';
+                        }
+                    } else {
+                        li.innerText = ans;
+                    }
+                    ul.appendChild(li);
+                });
+                qBox.style.display = 'block';
+            }
+        } else {
+            qBox.style.display = 'none';
+        }
+    }
+
     // OTOMASYON: Eğer oyundayasak ve herkes cevap verdiyse süreyi beklemeden geç
     if (gameState.status === 'question' && gameState.players) {
         const playersArr = Object.values(gameState.players);
