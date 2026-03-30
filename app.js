@@ -36,6 +36,18 @@ document.getElementById('btn-join-lobby').addEventListener('click', () => {
     }
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+    const rejoinBtn = document.getElementById('btn-rejoin-lobby');
+    if (rejoinBtn) {
+        rejoinBtn.addEventListener('click', () => {
+            if (!myNickname || !myPlayerId) return;
+            const playerRef = db.ref(`active_game/players/${myPlayerId}`);
+            playerRef.set({ name: myNickname, score: 0, currentAnswer: null });
+            rejoinBtn.style.display = 'none';
+        });
+    }
+});
+
 const listenToGame = () => {
     gameRef.on('value', (snapshot) => {
         gameState = snapshot.val();
@@ -83,20 +95,31 @@ const listenToGame = () => {
 
 const renderLobby = () => {
     const list = document.getElementById('lobby-players-list');
+    const rejoinBtn = document.getElementById('btn-rejoin-lobby');
     list.innerHTML = '';
+
+    let amIinLobby = false;
+
     if (!gameState.players) {
         document.getElementById('lobby-player-count').innerText = 0;
-        return;
-    }
-    const keys = Object.keys(gameState.players);
-    document.getElementById('lobby-player-count').innerText = keys.length;
+    } else {
+        const keys = Object.keys(gameState.players);
+        document.getElementById('lobby-player-count').innerText = keys.length;
 
-    keys.forEach(id => {
-        const div = document.createElement('div');
-        div.className = 'player-tag';
-        div.innerText = gameState.players[id].name;
-        list.appendChild(div);
-    });
+        keys.forEach(id => {
+            if (id === myPlayerId) amIinLobby = true;
+            const div = document.createElement('div');
+            div.className = 'player-tag';
+            div.innerText = gameState.players[id].name;
+            list.appendChild(div);
+        });
+    }
+
+    if (!amIinLobby && myNickname && rejoinBtn) {
+        rejoinBtn.style.display = 'block';
+    } else if (rejoinBtn) {
+        rejoinBtn.style.display = 'none';
+    }
 };
 
 const initQuestion = () => {
