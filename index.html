@@ -62,7 +62,8 @@
         <!-- Interactive Wait view -->
         <div id="view-wait" class="view">
             <h2 id="wait-message" class="status-message">Cevap Gönderildi!</h2>
-            <p id="wait-submessage">Öğretmenin sonucu göstermesi / sürenin bitmesi bekleniyor...</p>
+            <p id="wait-submessage" style="font-weight:bold;">Diğer oyuncuların cevaplaması veya sürenin dolması
+                bekleniyor...</p>
             <div class="loader"></div>
             <div id="wait-answers-count" style="margin-top:1rem; font-size:1.5rem; font-weight:bold;">...</div>
         </div>
@@ -89,8 +90,9 @@
                 <div id="leaderboard-list" class="leaderboard-list"></div>
             </div>
 
-            <p style="margin-top:20px; color:white; font-size:1.2rem; font-weight:bold;">Yöneticinin yeni soruya
-                geçmesini bekleyin...</p>
+            <p id="next-question-indicator" style="margin-top:20px; color:white; font-size:1.2rem; font-weight:bold;">
+                Sıradaki soru birazdan otomatik olarak başlayacak...
+            </p>
         </div>
     </div>
     <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>

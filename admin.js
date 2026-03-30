@@ -79,11 +79,45 @@ const transitionToResult = (index) => {
         correctIndex: correctIdx
     };
 
+    // Orijinal Kahoot Puanlama Mantığı ve Streak Bonus
     if (gameState && gameState.players) {
         Object.keys(gameState.players).forEach(pid => {
             const p = gameState.players[pid];
+
             if (p.currentAnswer === correctIdx) {
-                updates[`players/${pid}/score`] = (p.score || 0) + 1000;
+                // 1. Gecikme süresini hesapla
+                let delay = 15000;
+                if (p.timestamp && gameState.questionStartTime) {
+                    delay = p.timestamp - gameState.questionStartTime;
+                }
+
+                // 2. İnternet / Cihaz gecikmesi için 0.5 saniye (500ms) tolerans
+                let effectiveDelay = Math.max(0, delay - 500);
+                if (effectiveDelay > 14500) effectiveDelay = 14500;
+
+                // 3. Oransal Puan Dağıtımı (İlk %50 Garanti, İkinci %50 Hız)
+                const ratio = 1 - (effectiveDelay / 14500);
+                let points = 500 + Math.round(ratio * 500);
+
+                // 4. Streak (Seri) Bonus Hesaplama
+                const newStreak = (p.streak || 0) + 1;
+                let streakBonus = 0;
+                if (newStreak >= 2) {
+                    streakBonus = Math.min((newStreak - 1) * 100, 500); // Max 500 bonus
+                }
+
+                const totalPointsEarned = points + streakBonus;
+
+                updates[`players/${pid}/score`] = (p.score || 0) + totalPointsEarned;
+                updates[`players/${pid}/lastPoints`] = totalPointsEarned;
+                updates[`players/${pid}/streak`] = newStreak;
+                updates[`players/${pid}/streakBonus`] = streakBonus;
+
+            } else {
+                // Yanlış veya Boş Cevap durumunda seri sıfırlanır
+                updates[`players/${pid}/lastPoints`] = 0;
+                updates[`players/${pid}/streak`] = 0;
+                updates[`players/${pid}/streakBonus`] = 0;
             }
         });
     }
